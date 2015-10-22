@@ -130,17 +130,19 @@ namespace TahmKench
 
         private static void LastHit()
         {
-            if (Player.ManaPercent < MenuConfig.LastHitMana)
-                return;
-
-            if (SpellManager.Q.IsReady() && MenuConfig.LastHitQ)
+            if (Player.ManaPercent <= MenuConfig.LastHitMana)
             {
-                var Minion = MinionManager.GetMinions(SpellManager.Q.Range, MinionTypes.All, MinionTeam.Enemy)
-                    .FirstOrDefault(minion => minion.IsValidTarget(SpellManager.Q.Range) &&
-                    Player.GetSpellDamage(minion, SpellSlot.Q) >= minion.Health);
+                if (SpellManager.Q.IsReady() && MenuConfig.LastHitQ)
+                {
+                    var Minion = MinionManager.GetMinions(SpellManager.Q.Range, MinionTypes.All, MinionTeam.Enemy)
+                        .FirstOrDefault(minion => minion.IsValidTarget(SpellManager.Q.Range) &&
+                        Player.GetSpellDamage(minion, SpellSlot.Q) >= minion.Health);
 
-                if (Minion != null)
-                    SpellManager.CastSpell(SpellManager.Q, Minion, HitChance.High);
+                    if (Minion != null)
+                        SpellManager.CastSpell(SpellManager.Q, Minion, HitChance.High);
+                }
+                else
+                    return;
             }
         }
 
