@@ -9,6 +9,8 @@ To-Do List -- Nami
 + Custom Q Hitchance
 + Anti Gapclosers
 + Q on Disables/Stuns
++ Anti-Tristana (Predict Jump Location)
++ Anti-Dash
 
 + In-game chat upon loading
 
