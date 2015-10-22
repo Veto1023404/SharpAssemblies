@@ -96,11 +96,12 @@ namespace TahmKench
                         break;
 
                     case 3:
+                        if (current == SwallowedTarget.None && MenuConfig.ComboW && target.Distance(Player) < 250)
+                            SpellManager.W.CastOnUnit(target);
+
                         if (MenuConfig.ComboQ)
                             SpellManager.Q.Cast(target);
 
-                        if (current == SwallowedTarget.None && MenuConfig.ComboW && target.Distance(Player) < 250)
-                            SpellManager.W.CastOnUnit(target);
                         break;
                 }
             }
@@ -130,7 +131,7 @@ namespace TahmKench
 
         private static void LastHit()
         {
-            if (Player.ManaPercent <= MenuConfig.LastHitMana)
+            if (Player.ManaPercent >= MenuConfig.LastHitMana)
             {
                 if (SpellManager.Q.IsReady() && MenuConfig.LastHitQ)
                 {
