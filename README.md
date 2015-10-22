@@ -1,0 +1,2 @@
+# SharpAssemblies
+Assemblies for LeagueSharp
