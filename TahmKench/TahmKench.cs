@@ -98,8 +98,7 @@ namespace TahmKench
                     case 3:
                         if (current == SwallowedTarget.None && MenuConfig.ComboW && target.Distance(Player) < 250)
                             SpellManager.W.CastOnUnit(target);
-
-                        if (MenuConfig.ComboQ)
+                        else if (MenuConfig.ComboQ && target.Distance(Player) > 250)
                             SpellManager.Q.Cast(target);
 
                         break;
