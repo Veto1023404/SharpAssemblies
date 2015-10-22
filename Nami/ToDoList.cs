@@ -8,6 +8,7 @@ To-Do List -- Nami
 + W Blacklist
 + Custom Q Hitchance
 + Anti Gapclosers
++ Q on Disables/Stuns
 
 + In-game chat upon loading
 
