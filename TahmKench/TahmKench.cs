@@ -78,6 +78,9 @@ namespace TahmKench
                 int buffStack = target.GetBuffCount(tahmPassive);
                 switch (buffStack)
                 {
+                    case -1:
+                        break; 
+
                     case 1:
                         if (MenuConfig.ComboQ)
                             SpellManager.Q.Cast(target);
@@ -91,7 +94,7 @@ namespace TahmKench
                             SpellManager.Q.Cast(target);
                         else if (target.Distance(Player) <= 200)
                             Player.IssueOrder(GameObjectOrder.AttackUnit, target);
-                        else if (MenuConfig.ComboW && target.Distance(Player) > 350 && buffStack <= 2)
+                        else
                         {
                             if (current == SwallowedTarget.None)
                                 SpellManager.W.CastOnUnit(closestMinion);
@@ -101,7 +104,7 @@ namespace TahmKench
                         break;
 
                     case 3:
-                        if (current == SwallowedTarget.None && MenuConfig.ComboW && target.Distance(Player) <= 300)
+                        if (current == SwallowedTarget.None && MenuConfig.ComboW && target.Distance(Player) <= 250)
                             SpellManager.W.CastOnUnit(target);
                         else if (MenuConfig.ComboQ && target.Distance(Player) > 250)
                             SpellManager.Q.Cast(target);
