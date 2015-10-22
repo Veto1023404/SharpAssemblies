@@ -79,6 +79,11 @@ namespace TahmKench
                 switch (buffStack)
                 {
                     case 1:
+                        if (MenuConfig.ComboQ)
+                            SpellManager.Q.Cast(target);
+                        else if (target.Distance(Player) <= 200)
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+                        break;
                         
 
                     case 2:
@@ -86,7 +91,7 @@ namespace TahmKench
                             SpellManager.Q.Cast(target);
                         else if (target.Distance(Player) <= 200)
                             Player.IssueOrder(GameObjectOrder.AttackUnit, target);
-                        else if (MenuConfig.ComboW && target.Distance(Player) > 350 && buffStack < 2)
+                        else if (MenuConfig.ComboW && target.Distance(Player) > 350 && buffStack <= 2)
                         {
                             if (current == SwallowedTarget.None)
                                 SpellManager.W.CastOnUnit(closestMinion);
@@ -96,7 +101,7 @@ namespace TahmKench
                         break;
 
                     case 3:
-                        if (current == SwallowedTarget.None && MenuConfig.ComboW && target.Distance(Player) < 250)
+                        if (current == SwallowedTarget.None && MenuConfig.ComboW && target.Distance(Player) <= 300)
                             SpellManager.W.CastOnUnit(target);
                         else if (MenuConfig.ComboQ && target.Distance(Player) > 250)
                             SpellManager.Q.Cast(target);
@@ -164,12 +169,12 @@ namespace TahmKench
         static void Drawing_OnDraw(EventArgs args)
         {
             if (MenuConfig.DrawQ)
-                Render.Circle.DrawCircle(Player.Position, SpellManager.Q.Range, Color.Red);
+                Render.Circle.DrawCircle(Player.Position, SpellManager.Q.Range, Color.LightBlue);
 
             if (MenuConfig.DrawW)
             {
                 if (current == SwallowedTarget.None)
-                    Render.Circle.DrawCircle(Player.Position, SpellManager.W.Range, Color.LightBlue);
+                    Render.Circle.DrawCircle(Player.Position, SpellManager.W.Range, Color.Blue);
                 else if (current == SwallowedTarget.Minion)
                     Render.Circle.DrawCircle(Player.Position, SpellManager.W2.Range, Color.DarkBlue);
             }
