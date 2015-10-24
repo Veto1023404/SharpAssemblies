@@ -15,6 +15,7 @@ namespace Nami
     {
         public static Obj_AI_Hero Player = ObjectManager.Player;
         private static Obj_AI_Base target;
+        private static Obj_AI_Base sender;
 
         internal static void Load(EventArgs args)
         {
@@ -32,6 +33,7 @@ namespace Nami
             Game.OnUpdate += Game_OnUpdate;
             Interrupter2.OnInterruptableTarget += OnInterruptableTarget;
             AntiGapcloser.OnEnemyGapcloser += Anti_GapCloser;
+            Obj_AI_Hero.OnProcessSpellCast += OnProcessSpellCast;
             Drawing.OnDraw += Drawing_OnDraw;
         }
 
@@ -45,9 +47,6 @@ namespace Nami
 
             if (MenuConfig.HealAlly)
                 AllyHeal();
-
-            if (MenuConfig.AntiTristana)
-                AntiTristana();
 
             if (MenuConfig.QOnSlow)
                 QOnSlow();
@@ -273,6 +272,26 @@ namespace Nami
                 SpellManager.Q.Cast(enemy);
         }
 
+        private static void Anti_GapCloser(ActiveGapcloser gapCloser)
+        {
+            if (!MenuConfig.GapcloseQ)
+                return;
+
+            if (gapCloser.Sender.IsAlly || gapCloser.Sender.IsMe)
+                return;
+
+            if (Player.Distance(gapCloser.Sender) <= SpellManager.Q.Range)
+                SpellManager.Q.Cast(gapCloser.Sender);
+        }
+
+        private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender.IsAlly)
+                return;
+            if (sender.CharData.Equals("Tristana") && MenuConfig.AntiTristana)
+                AntiTristana(sender, args);
+        }
+
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (MenuConfig.DrawQ && SpellManager.Q.Level > 0)
@@ -286,18 +305,6 @@ namespace Nami
 
             if (MenuConfig.DrawR && SpellManager.R.Level > 0)
                 Render.Circle.DrawCircle(Player.Position, SpellManager.R.Range, Color.Blue);
-        }
-
-        private static void Anti_GapCloser(ActiveGapcloser gapCloser)
-        {
-            if (!MenuConfig.GapcloseQ)
-                return;
-
-            if (gapCloser.Sender.IsAlly || gapCloser.Sender.IsMe)
-                return;
-
-            if (Player.Distance(gapCloser.Sender) <= SpellManager.Q.Range)
-                SpellManager.Q.Cast(gapCloser.Sender);
         }
     }
 }
