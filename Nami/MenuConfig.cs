@@ -160,3 +160,5 @@ namespace Nami
         public static bool DrawR { get { return config.Item("DrawR").GetValue<bool>(); } }
     }
 }
+
+// Updated
