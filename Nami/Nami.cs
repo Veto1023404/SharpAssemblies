@@ -224,35 +224,6 @@ namespace Nami
             }
         }
 
-        private static void AntiTristana(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            if (args.Slot.Equals(SpellSlot.W) && args.End.Distance(Player.Position) <= SpellManager.Q.Range)
-            {
-                Vector3 TristPosition = new Vector3();
-
-                if (args.End.Distance(args.Start) >= 825)
-                    TristPosition = sender.Position.Extend(args.End, 825);
-
-                if (args.Start.Distance(args.End) < 825)
-                    TristPosition = args.End;
-
-                if (MenuConfig.AntiTristana && SpellManager.Q.IsReady())
-                {
-                    if (TristPosition.Distance(Player.Position) <= SpellManager.Q.Range)
-                    {
-                        Utility.DelayAction.Add((int)(500 + Player.Distance(TristPosition) / args.SData.MissileSpeed -
-                            (Player.Distance(TristPosition) / SpellManager.Q.Speed) - 250), () =>
-                            {
-                                if (TristPosition.Distance(Player.Position) < SpellManager.Q.Range)
-                                {
-                                    SpellManager.Q.Cast(TristPosition);
-                                }
-                            });
-                    }
-                }
-            }
-        }
-
         private static void Ignite()
         {
             if (target != null && SpellManager.Ignite != SpellSlot.Unknown &&
@@ -290,6 +261,35 @@ namespace Nami
                 return;
             if (sender.CharData.Equals("Tristana") && MenuConfig.AntiTristana)
                 AntiTristana(sender, args);
+        }
+
+        private static void AntiTristana(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (args.Slot.Equals(SpellSlot.W) && args.End.Distance(Player.Position) <= SpellManager.Q.Range)
+            {
+                Vector3 TristPosition = new Vector3();
+
+                if (args.End.Distance(args.Start) >= 825)
+                    TristPosition = sender.Position.Extend(args.End, 825);
+
+                if (args.Start.Distance(args.End) < 825)
+                    TristPosition = args.End;
+
+                if (MenuConfig.AntiTristana && SpellManager.Q.IsReady())
+                {
+                    if (TristPosition.Distance(Player.Position) <= SpellManager.Q.Range)
+                    {
+                        Utility.DelayAction.Add((int)(500 + Player.Distance(TristPosition) / args.SData.MissileSpeed -
+                            (Player.Distance(TristPosition) / SpellManager.Q.Speed) - 250), () =>
+                            {
+                                if (TristPosition.Distance(Player.Position) < SpellManager.Q.Range)
+                                {
+                                    SpellManager.Q.Cast(TristPosition);
+                                }
+                            });
+                    }
+                }
+            }
         }
 
         private static void Drawing_OnDraw(EventArgs args)
