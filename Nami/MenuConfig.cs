@@ -87,6 +87,22 @@ namespace Nami
                 config.AddSubMenu(interuptMenu);
             }
 
+            var gapcloserMenu = new Menu("Gapclose", "Gapclose");
+            {
+                gapcloserMenu.AddItem(new MenuItem("GapcloseQ", "Gapclose Q")).SetValue(true);
+
+                config.AddSubMenu(gapcloserMenu);
+            }
+
+            var miscMenu = new Menu("Misc", "Misc");
+            {
+                miscMenu.AddItem(new MenuItem("QOnStun", "Auto Q on Stun")).SetValue(true);
+                miscMenu.AddItem(new MenuItem("QOnSlow", "Auto Q on Slow")).SetValue(true);
+                miscMenu.AddItem(new MenuItem("AntiTristana", "Anti-Tristana")).SetValue(true);
+
+                config.AddSubMenu(miscMenu);
+            }
+
             var autoHealMenu = new Menu("AutoHeal", "Autoheal");
             {
                 autoHealMenu.AddItem(new MenuItem("HealMana", "Mana & Usage")).SetValue(new Slider(40, 1, 99));
@@ -94,6 +110,8 @@ namespace Nami
                 autoHealMenu.AddItem(new MenuItem("HealPlayer", "Heal yourself")).SetValue(true);
                 autoHealMenu.AddItem(new MenuItem("MinAllyHP", "Minimum Ally HP")).SetValue(new Slider(40, 1, 99));
                 autoHealMenu.AddItem(new MenuItem("HealAlly", "Heal Ally")).SetValue(true);
+
+                config.AddSubMenu(autoHealMenu);
             }
 
             var drawingMenu = new Menu("Drawings", "Drawings");
@@ -127,6 +145,10 @@ namespace Nami
         public static bool JungleQ { get { return config.Item("JungleQ").GetValue<bool>(); } }
         public static bool JungleW { get { return config.Item("JungleW").GetValue<bool>(); } }
         public static bool InteruptQ { get { return config.Item("InteruptQ").GetValue<bool>(); } }
+        public static bool GapcloseQ { get { return config.Item("GapcloseQ").GetValue<bool>(); } }
+        public static bool QOnStun { get { return config.Item("QOnStun").GetValue<bool>(); } }
+        public static bool QOnSlow { get { return config.Item("QOnSlow").GetValue<bool>(); } }
+        public static bool AntiTristana { get { return config.Item("AntiTristana").GetValue<bool>(); } }
         public static int HealMana { get { return config.Item("HealMana").GetValue<Slider>().Value; } }
         public static int MinPlayerHP { get { return config.Item("MinPlayerHP").GetValue<Slider>().Value; } }
         public static bool HealPlayer { get { return config.Item("HealPlayer").GetValue<bool>(); } }

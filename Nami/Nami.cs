@@ -31,6 +31,7 @@ namespace Nami
 
             Game.OnUpdate += Game_OnUpdate;
             Interrupter2.OnInterruptableTarget += OnInterruptableTarget;
+            AntiGapcloser.OnEnemyGapcloser += Anti_GapCloser;
             Drawing.OnDraw += Drawing_OnDraw;
         }
 
@@ -45,6 +46,15 @@ namespace Nami
             if (MenuConfig.HealAlly)
                 AllyHeal();
 
+            if (MenuConfig.AntiTristana)
+                AntiTristana();
+
+            if (MenuConfig.QOnSlow)
+                QOnSlow();
+
+            if (MenuConfig.QOnStun)
+                QOnStun();
+
             switch (MenuConfig.Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -53,11 +63,11 @@ namespace Nami
 
                 case Orbwalking.OrbwalkingMode.Mixed:
                     Harass();
+                    LastHit();
                     break;
 
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     // LaneClear();
-                    LastHit();
                     break;
 
                 case Orbwalking.OrbwalkingMode.LastHit:
@@ -71,6 +81,10 @@ namespace Nami
             if (target == null || !target.IsValidTarget())
                 return;
 
+            var ally = HeroManager.Allies.Where(hero => hero.IsAlly && MenuConfig.ComboE)
+                    .OrderBy(closest => closest.Distance(target))
+                    .FirstOrDefault();
+
             if (MenuConfig.ComboQ && SpellManager.Q.IsReady())
             {
                 var qPredict = SpellManager.Q.GetPrediction(target).Hitchance;
@@ -79,17 +93,19 @@ namespace Nami
                     SpellManager.Q.Cast(target, true);
             }
 
-            if (MenuConfig.ComboW && SpellManager.W.IsReady())
+            if (MenuConfig.ComboW && SpellManager.W.IsReady() && ally.Health <= 40 * 100)
+                SpellManager.W.Cast(ally);
+            else if (MenuConfig.ComboW && SpellManager.W.IsReady())
                 SpellManager.W.Cast(target);
 
             if (MenuConfig.ComboE && SpellManager.E.IsReady())
-            {
-                var ally = HeroManager.Allies.Where(hero => hero.IsAlly && MenuConfig.ComboE)
-                    .OrderBy(closest => closest.Distance(target))
-                    .FirstOrDefault();
-
+            { 
                 if (SpellManager.E.IsInRange(ally))
                     SpellManager.E.CastOnUnit(ally);
+                else if (SpellManager.E.IsReady())
+                    SpellManager.E.CastOnUnit(Player);
+                else
+                    return;
             }
 
             if (MenuConfig.ComboR && SpellManager.R.IsReady() && SpellManager.R.IsInRange(target))
@@ -174,8 +190,67 @@ namespace Nami
             foreach (var ally in ObjectManager.Get< Obj_AI_Hero>().Where(ally => ally.IsAlly && !ally.IsMe))
             {
                 if (MenuConfig.HealAlly && (ally.Health / ally.MaxHealth) * 100 <= MenuConfig.MinAllyHP && SpellManager.W.IsReady()
-                    && ally.Distance(Player.ServerPosition) <= SpellManager.W.Range && Player.ManaPercentage() >= MenuConfig.HealMana)
+                    && ally.Distance(Player.ServerPosition) <= SpellManager.W.Range && Player.ManaPercent >= MenuConfig.HealMana)
                     SpellManager.W.Cast(ally);
+            }
+        }
+
+        private static void QOnSlow()
+        {
+            if (MenuConfig.QOnSlow && SpellManager.Q.IsReady())
+            {
+                var target = HeroManager.Enemies.FirstOrDefault(t => t.IsValidTarget(SpellManager.Q.Range)
+                && t.HasBuffOfType(BuffType.Slow));
+
+                var qHitchance = SpellManager.Q.GetPrediction(target);
+
+                if (target != null)
+                    if (qHitchance.Hitchance >= HitChance.High)
+                        SpellManager.Q.Cast(target);
+            }
+        }
+
+        private static void QOnStun()
+        {
+            if (MenuConfig.QOnStun && SpellManager.Q.IsReady())
+            {
+                var target = HeroManager.Enemies.FirstOrDefault(t => t.IsValidTarget(SpellManager.Q.Range)
+                && t.IsStunned || t.HasBuffOfType(BuffType.Stun));
+
+                var qHitchance = SpellManager.Q.GetPrediction(target);
+
+                if (target != null)
+                    if (qHitchance.Hitchance >= HitChance.High)
+                        SpellManager.Q.Cast(target);
+            }
+        }
+
+        private static void AntiTristana(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (args.Slot.Equals(SpellSlot.W) && args.End.Distance(Player.Position) <= SpellManager.Q.Range)
+            {
+                Vector3 TristPosition = new Vector3();
+
+                if (args.End.Distance(args.Start) >= 825)
+                    TristPosition = sender.Position.Extend(args.End, 825);
+
+                if (args.Start.Distance(args.End) < 825)
+                    TristPosition = args.End;
+
+                if (MenuConfig.AntiTristana && SpellManager.Q.IsReady())
+                {
+                    if (TristPosition.Distance(Player.Position) <= SpellManager.Q.Range)
+                    {
+                        Utility.DelayAction.Add((int)(500 + Player.Distance(TristPosition) / args.SData.MissileSpeed -
+                            (Player.Distance(TristPosition) / SpellManager.Q.Speed) - 250), () =>
+                            {
+                                if (TristPosition.Distance(Player.Position) < SpellManager.Q.Range)
+                                {
+                                    SpellManager.Q.Cast(TristPosition);
+                                }
+                            });
+                    }
+                }
             }
         }
 
@@ -213,5 +288,16 @@ namespace Nami
                 Render.Circle.DrawCircle(Player.Position, SpellManager.R.Range, Color.Blue);
         }
 
+        private static void Anti_GapCloser(ActiveGapcloser gapCloser)
+        {
+            if (!MenuConfig.GapcloseQ)
+                return;
+
+            if (gapCloser.Sender.IsAlly || gapCloser.Sender.IsMe)
+                return;
+
+            if (Player.Distance(gapCloser.Sender) <= SpellManager.Q.Range)
+                SpellManager.Q.Cast(gapCloser.Sender);
+        }
     }
 }
