@@ -34,7 +34,6 @@ namespace Karma
             MenuConfig.LoadMenu();
 
             Game.OnUpdate += Game_OnUpdate;
-            Interrupter2.OnInterruptableTarget += OnInterruptableTarget;
             AntiGapcloser.OnEnemyGapcloser += Anti_GapCloser;
             Drawing.OnDraw += Drawing_OnDraw;
         }
@@ -169,7 +168,7 @@ namespace Karma
                 if (Minion != null)
                     SpellManager.CastSpell(SpellManager.Q, Minion, HitChance.High);
                 else if (Minion != null)
-                    SpellManager.CastSpell(SpellManager.W, Minion, HitChance.High));
+                    SpellManager.CastSpell(SpellManager.W, Minion, HitChance.High);
             }
         }
 
