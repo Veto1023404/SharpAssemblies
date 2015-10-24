@@ -31,6 +31,7 @@ namespace Nami
             {
                 comboMenu.AddItem(new MenuItem("ComboQ", "Use Q")).SetValue(true);
                 comboMenu.AddItem(new MenuItem("ComboW", "Use W")).SetValue(true);
+                comboMenu.AddItem(new MenuItem("ComboWAllyHP", "Use W on Ally when HP %")).SetValue(new Slider(50, 1, 99));
                 comboMenu.AddItem(new MenuItem("ComboE", "Use E")).SetValue(true);
 
                 config.AddSubMenu(comboMenu);
@@ -129,6 +130,7 @@ namespace Nami
 
         public static bool ComboQ { get { return config.Item("ComboQ").GetValue<bool>(); } }
         public static bool ComboW { get { return config.Item("ComboW").GetValue<bool>(); } }
+        public static int ComboWAllyHP { get { return config.Item("ComboWAllyHP").GetValue<Slider>().Value; } }
         public static bool ComboE { get { return config.Item("ComboE").GetValue<bool>(); } }
         public static bool ComboR { get { return config.Item("ComboR").GetValue<bool>(); } }
         public static int HarassMana { get { return config.Item("HarassMana").GetValue<Slider>().Value; } }

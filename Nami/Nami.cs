@@ -92,7 +92,7 @@ namespace Nami
                     SpellManager.Q.Cast(target, true);
             }
 
-            if (MenuConfig.ComboW && SpellManager.W.IsReady() && ally.Health <= 40 * 100)
+            if (MenuConfig.ComboW && SpellManager.W.IsReady() && ally.Health <= MenuConfig.ComboWAllyHP)
                 SpellManager.W.Cast(ally);
             else if (MenuConfig.ComboW && SpellManager.W.IsReady())
                 SpellManager.W.Cast(target);
