@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SparkyVetoAIO")]
+[assembly: AssemblyTitle("AnotherSharpAIO")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SparkyVetoAIO")]
+[assembly: AssemblyProduct("AnotherSharpAIO")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9cefffa2-051e-4535-9423-456a36de9660")]
+[assembly: Guid("c19160ca-78bd-439e-b8f1-4b829539ab1d")]
 
 // Version information for an assembly consists of the following four values:
 //
