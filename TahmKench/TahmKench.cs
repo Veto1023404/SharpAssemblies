@@ -79,6 +79,10 @@ namespace TahmKench
                 switch (buffStack)
                 {
                     case -1:
+                        if (MenuConfig.ComboQ)
+                            SpellManager.Q.Cast(target);
+                        else if (target.Distance(Player) <= 200)
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                         break; 
 
                     case 1:
@@ -140,12 +144,12 @@ namespace TahmKench
         {
             if (Player.ManaPercent >= MenuConfig.LastHitMana)
             {
-                if (SpellManager.Q.IsReady() && MenuConfig.LastHitQ)
-                {
-                    var Minion = MinionManager.GetMinions(SpellManager.Q.Range, MinionTypes.All, MinionTeam.Enemy)
+                var Minion = MinionManager.GetMinions(SpellManager.Q.Range, MinionTypes.All, MinionTeam.Enemy)
                         .FirstOrDefault(minion => minion.IsValidTarget(SpellManager.Q.Range) &&
                         Player.GetSpellDamage(minion, SpellSlot.Q) >= minion.Health);
 
+                if (SpellManager.Q.IsReady() && MenuConfig.LastHitQ && Minion.Distance(Player) >= Player.AttackRange)
+                {
                     if (Minion != null)
                         SpellManager.CastSpell(SpellManager.Q, Minion, HitChance.High);
                 }
